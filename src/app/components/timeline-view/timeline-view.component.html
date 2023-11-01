@@ -1,0 +1,98 @@
+<select (change)="setSelectedYear($event)">
+    <option *ngFor="let year of years"
+        [selected]="year.key === selectedYear" 
+        [attr.value]="year.key" 
+        [attr.name]="year.name">
+        {{ year.name }}
+    </option>
+</select>
+
+<select (change)="setSelectedMonth($event)">
+    <option *ngFor="let month of months"
+        [selected]="month.key === selectedMonthIndex" 
+        [attr.value]="month.key" 
+        [attr.name]="month.name">
+        {{ month.name }}
+    </option>
+</select>
+
+<svg 
+    #timeLineRef
+    [attr.viewBox]="'0 0 ' + width + ' ' + height" 
+    style="width: max(100%, 1800px);"
+>
+    <!-- Vertical Lines -->
+    <line *ngFor="let xAxisElement of xAxisElements; let index = index"
+        class="gray-line"
+        [attr.x1]="index * xFactor" 
+        [attr.y1]="topMargin"
+        [attr.x2]="index * xFactor" 
+        [attr.y2]="height"
+    />
+
+    <!-- Blue Line Representing Today -->
+    <g [ngSwitch]="timeLineView">
+        <line *ngSwitchCase="'Date'" class="blue-line"
+            [attr.x1]="(currentHour)*xFactor + currentMinute" 
+            [attr.y1]="topMargin"
+            [attr.x2]="(currentHour)*xFactor + currentMinute" 
+            [attr.y2]="height"/>
+
+        <line *ngSwitchCase="'Month'" class="blue-line"
+            [attr.x1]="(currentDay)*xFactor + currentHour" 
+            [attr.y1]="topMargin"
+            [attr.x2]="(currentDay)*xFactor + currentHour" 
+            [attr.y2]="height"/>
+
+        <line *ngSwitchCase="'Year'" class="blue-line"
+            [attr.x1]="(currentMonth)*xFactor + currentDay" 
+            [attr.y1]="topMargin"
+            [attr.x2]="(currentMonth)*xFactor + currentDay" 
+            [attr.y2]="height"/>
+    </g>
+ 
+    <!-- Last Line -->
+    <line 
+        class="gray-line"
+        [attr.x1]="xAxisElements.length * xFactor" 
+        [attr.y1]="topMargin"
+        [attr.x2]="xAxisElements.length * xFactor" 
+        [attr.y2]="height"
+    />
+    
+    <!-- Top Horizontal Line -->
+    <line 
+        class="gray-line"
+        x1="0" [attr.y1]="topMargin"
+        [attr.x2]="xAxisElements.length * xFactor" 
+        [attr.y2]="topMargin"
+    />
+
+    <!-- xAxisElements Labels -->
+    <text *ngFor="let xAxisElement of xAxisElements; let index = index" 
+        [attr.x]="(index + 1)*xFactor - xFactor/2"  
+        [attr.y]="topMargin - 5">
+        {{ timeLineView === 'Month' ? xAxisElement.key : xAxisElement.name }}
+    </text>
+
+    <!-- Events -->
+    <rect *ngFor="let event of events" 
+        [attr.x]="event.x" [attr.y]="event.y" 
+        [attr.width]="event.width" 
+        [attr.height]="event.height"
+        [style.fill]="event.type ? event.type.bgColor : ''"
+        [style.stroke]="event.type ? event.type.color : ''"
+        rx="1"
+    /> 
+
+    <g *ngFor="let event of events">
+        <text
+            *ngIf="event.showText"  
+            class="small-text"
+            [attr.x]="event.width && event.x ? event.x + 2 : ''" [attr.y]="event.y ? event.y + 12 : ''"
+            [style.fill]="event.type ? event.type.color : ''"
+        >
+            {{ event.name }}
+        </text>
+    </g>
+</svg>

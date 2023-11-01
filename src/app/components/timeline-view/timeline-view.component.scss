@@ -1,0 +1,33 @@
+
+
+svg {
+    height: 100%;
+}
+
+.gray-line {
+    stroke: gray;
+    stroke-width: 0.1;
+}
+
+.blue-line {
+    stroke: blue;
+    stroke-width: 0.2;
+}
+
+text {
+    font-family: sans-serif;
+    font-size: 8px;
+    text-anchor: middle;
+
+    &.small-text {
+        font-size: 5px;
+        text-anchor: start;
+    }
+}
+
+select {
+    padding: 5px 7px;
+    outline: none;
+}
+
+

@@ -76,7 +76,7 @@
     </text>
 
     <!-- Events -->
-    <rect *ngFor="let event of events" 
+    <rect *ngFor="let event of includedEvents" 
         [attr.x]="event.x" [attr.y]="event.y" 
         [attr.width]="event.width" 
         [attr.height]="event.height"
@@ -85,7 +85,7 @@
         rx="1"
     /> 
 
-    <g *ngFor="let event of events">
+    <g *ngFor="let event of includedEvents">
         <text
             *ngIf="event.showText"  
             class="small-text"

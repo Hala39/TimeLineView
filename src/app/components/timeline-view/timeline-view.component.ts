@@ -40,6 +40,8 @@ export class TimelineViewComponent implements AfterViewInit {
   minutesPerHour = 60;
   hoursPerDay = 24;
   daysPerMonth = 30;
+  get firstDayOfTheMonth() {return new Date(this.selectedYear, this.selectedMonthIndex, 1)};
+  get lastDayOfTheMonth() {return new Date(this.selectedYear, this.selectedMonthIndex + 1, 0)};
   eventTypes: EventType[] = [
     {
       id: 1,
@@ -52,32 +54,54 @@ export class TimelineViewComponent implements AfterViewInit {
       name: "Meetings and Discussions",
       color: "blue",
       bgColor: "lightblue"
+    },
+    {
+      id: 3,
+      name: "Meetings and Discussions",
+      color: "green",
+      bgColor: "lightgreen"
     }
   ]
 
   events: TimeLineViewEvent[] = [
     {
       id: 1,
-      name: "Meeting with Lulu",
+      name: "1 Meeting with Lulu",
       startDate: new Date(2023, 9, 3, 11, 10, 0),
       endDate: new Date(2023, 9, 5, 12, 0, 0),
       typeId: 1,
     },
     {
       id: 2,
-      name: "Meeting with Hala",
+      name: "2 Meeting with Hala",
       startDate: new Date(2023, 9, 6, 12, 0, 0),
       endDate: new Date(2023, 9, 11, 6, 0, 0),
       typeId: 2,
     },
     {
       id: 3,
-      name: "Meeting with Hala",
-      startDate: new Date(2023, 3, 6, 12, 0, 0),
-      endDate: new Date(2023, 9, 11, 6, 0, 0),
-      typeId: 2,
+      name: "3 Meeting with Hala",
+      startDate: new Date(2022, 3, 6, 12, 0, 0),
+      endDate: new Date(2023, 9, 19, 6, 0, 0),
+      typeId: 3,
+    },
+    {
+      id: 4,
+      name: "4 Meeting with Hala",
+      startDate: new Date(2023, 9, 16, 12, 0, 0),
+      endDate: new Date(2023, 10, 22, 6, 0, 0),
+      typeId: 1,
+    },
+    {
+      id: 5,
+      name: "5 Meeting with Hala",
+      startDate: new Date(2023, 10, 6, 3, 0, 0),
+      endDate: new Date(2023, 10, 11, 6, 0, 0),
+      typeId: 1,
     }
   ];
+
+  includedEvents: TimeLineViewEvent[] = [];
 
   constructor() { }
 
@@ -181,7 +205,7 @@ export class TimelineViewComponent implements AfterViewInit {
   private initializeEventsCoordinates() {
     switch (this.timeLineView) {
       case TimelineView.Year:
-        this.setEventsInMonths();
+        // this.setEventsInMonths();
         break;
 
       case TimelineView.Month:
@@ -193,38 +217,36 @@ export class TimelineViewComponent implements AfterViewInit {
     }
   }
 
-  private setEventsInMonths() {
-    this.events.forEach((event: TimeLineViewEvent, index: number) => {
-      
-      const startMonth = event.startDate.getMonth();
-      const startDay = event.startDate.getDate();
-      const x = (startMonth - 1) * this.xFactor + startDay;
-      const y = this.topMargin * index + this.topMargin;
-      const differenceInTime = event.endDate.getTime() - event.startDate.getTime();
-      const differenceInHours = 
-        differenceInTime / this.millisecondsPerSecond / this.secondsPerMinute / this.minutesPerHour / this.hoursPerDay / this.daysPerMonth * this.xFactor;
-      const width = differenceInHours;
-      const height = 20;
-      event.x = x;
-      event.y = y;
-      event.width = width;
-      event.height = height;
-    })
-  }
+  // private setEventsInMonths() {
+  //   this.events.forEach((event: TimeLineViewEvent, index: number) => {
+  //     const startMonth = event.startDate.getMonth();
+  //     const startDay = event.startDate.getDate();
+  //     const x = (startMonth - 1) * this.xFactor + startDay;
+  //     const y = this.topMargin * index + this.topMargin;
+  //     const differenceInTime = event.endDate.getTime() - event.startDate.getTime();
+  //     const differenceInHours = 
+  //       differenceInTime / this.millisecondsPerSecond / this.secondsPerMinute / this.minutesPerHour / this.hoursPerDay / this.daysPerMonth * this.xFactor;
+  //     const width = differenceInHours;
+  //     const height = 20;
+  //     event.x = x;
+  //     event.y = y;
+  //     event.width = width;
+  //     event.height = height;
+  //   })
+  // }
 
   private setEventsInDays() {
-    this.events.forEach((event: TimeLineViewEvent, index: number) => {
-      const millisecondsPerSecond = 1000;
-      const secondsPerMinute = 60;
-      const minutesPerHour = 60;
-      const hoursPerDay = 24;
+    this.includedEvents = this.events.filter(e => this.isEventIncludedBetweenDates(e));
+    this.includedEvents.forEach((event: TimeLineViewEvent, index: number) => {
       const startDay = event.startDate.getDate();
       const startHour = event.startDate.getHours();
-      const x = (startDay - 1) * this.xFactor + startHour;
+      const isStartDateBeforeTheFirstDay = this.isStartDateBeforeTheFirstDay(event);
+      const x = isStartDateBeforeTheFirstDay ? -1 : (startDay - 1) * this.xFactor + startHour;
       const y = this.topMargin * index + this.topMargin;
-      const differenceInTime = event.endDate.getTime() - event.startDate.getTime();
+      const differenceInTime = isStartDateBeforeTheFirstDay ? 
+        event.endDate.getTime() - this.firstDayOfTheMonth.getTime() : event.endDate.getTime() - event.startDate.getTime();
       const differenceInHours = 
-        differenceInTime / millisecondsPerSecond / secondsPerMinute / minutesPerHour / hoursPerDay * this.xFactor;
+        differenceInTime / this.millisecondsPerSecond / this.secondsPerMinute / this.minutesPerHour / this.hoursPerDay * this.xFactor;
       const width = differenceInHours;
       const height = 20;
       event.x = x;
@@ -233,6 +255,16 @@ export class TimelineViewComponent implements AfterViewInit {
       event.height = height;
       event.showText = differenceInHours > 24;
     })  
+  }
+
+  private isStartDateBeforeTheFirstDay(event: TimeLineViewEvent) : boolean {
+    return event.startDate.getTime() < this.firstDayOfTheMonth.getTime()
+  }
+
+  private isEventIncludedBetweenDates(e: TimeLineViewEvent): boolean {
+   
+    return (e.endDate.getTime() > this.firstDayOfTheMonth.getTime() && e.endDate.getTime() < this.lastDayOfTheMonth.getTime())
+      || e.startDate.getTime() > this.firstDayOfTheMonth.getTime() && e.startDate.getTime() < this.lastDayOfTheMonth.getTime()
   }
   
   private getDaysInMonth() : TimeLineViewElement[] {

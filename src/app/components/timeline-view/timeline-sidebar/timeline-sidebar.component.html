@@ -1,0 +1,89 @@
+<div *ngIf="showSidebar" class="sidebar">
+    <div class="toolbar">
+        <button (click)="hideSidebar()">&#10005;</button>
+    </div>
+    <h3>Event Types</h3>
+    <ul>
+        <li *ngFor="let eventType of eventTypes">
+            <app-timeline-sidebar-legend [eventType]="eventType"></app-timeline-sidebar-legend>
+        </li>
+    </ul>
+    <div class="event-toolbar">
+        <ng-container *ngIf="!editModeIsOn">
+            <button title="Edit" (click)="switchToEditMode()">
+                <i style="font-size:24px" class="fa">&#9998;</i>
+            </button>
+            <button title="Delete" (click)="delete()">
+                <i style="font-size:24px" class="fa">&#xf014;</i>
+            </button>
+        </ng-container>
+
+        <ng-container *ngIf="editModeIsOn">
+            <button title="Cancel" (click)="cancel()">
+                <i style="font-size:24px" class="fa">&#10005;</i>
+            </button>
+            <button title="Save" (click)="save()">
+                <i style="font-size:24px" class="fa">&#10003;</i>
+            </button>
+        </ng-container>
+    </div>
+    <div *ngIf="!editModeIsOn" class="event-preview">
+        <h3 class="event-name" [title]="event?.name">
+            {{ event?.name }}
+        </h3>
+        <h4>Event Type</h4>
+        <div class="event-type-name">
+            {{ event?.type?.name }}
+            <div class="circle" [style.backgroundColor]="event?.type?.bgColor"></div> 
+        </div>
+    
+        <h4>Start Date</h4>
+        {{ event?.startDate | date:"medium" }}
+    
+        <h4>End Date</h4>
+        {{ event?.endDate | date:"medium" }}
+    </div>
+    <form *ngIf="editModeIsOn" [formGroup]="editEventForm" class="event-form">
+        <p class="asterisk italic">The fields marked with asterisks are required.</p>
+        <p 
+            *ngIf="isStartDateBiggerThanEndDate"  
+            class="asterisk italic">
+            Make sure the start date takes place before the end date.
+        </p>
+
+        <h4>Event Name <span class="asterisk">*</span></h4>
+        <textarea 
+            #textareaRef 
+            rows="2" 
+            formControlName="name"
+            (input)="resizeTextarea()"
+            (focus)="resizeTextarea()"
+        >
+        </textarea>
+
+        <h4>Event Type<span class="asterisk">*</span></h4>
+        <div class="event-type-name">
+            <select (change)="setEventTypeValue($event)">
+                <option 
+                    *ngFor="let eventType of eventTypes" 
+                    [value]="eventType.id"
+                    [selected]="eventType.id === event?.typeId"
+                >
+                    {{ eventType.name }}
+                </option>
+            </select>
+        </div>
+    
+        <h4>Start Date<span class="asterisk">*</span></h4>
+        <input type="datetime-local" 
+            [value]="parsedStartDate" 
+            (change)="setStartDateValue($event)"
+        >
+    
+        <h4>End Date<span class="asterisk">*</span></h4>
+        <input type="datetime-local" 
+            [value]="parsedEndDate"
+            (change)="setEndDateValue($event)"
+        >
+    </form>
+</div>

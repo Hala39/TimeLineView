@@ -3,20 +3,28 @@
         <button class="chip">
             {{ selectedYear }}
         </button>
-        <button *ngIf="timeLineView !== 'Year'"  class="chip" (click)="zoomOutToYears()">
+        <button *ngIf="timeLineView !== 'Year'"  
+            class="chip" 
+            (click)="zoomOutToYears()"
+        >
             {{ months[selectedMonthIndex].name }} &#10005;
         </button>
-        <button *ngIf="timeLineView === 'Date'" class="chip" (click)="zoomOutToMonths()">
+        <button *ngIf="timeLineView === 'Date'" 
+            class="chip" 
+            (click)="zoomOutToMonths()"
+        >
            {{ selectedDateName }}, {{ selectedDate }} &#10005;
         </button>
     </div>
     <div class="pickers">
+        <button (click)="addEvent()">&#43;</button>
         <button class="today" (click)="resetToToday()">Today</button>
         <select (change)="setSelectedMonth($event)">
             <option *ngFor="let month of months"
                 [selected]="month.key === selectedMonthIndex" 
                 [attr.value]="month.key" 
-                [attr.name]="month.name">
+                [attr.name]="month.name"
+            >
                 {{ month.name }}
             </option>
         </select>
@@ -31,111 +39,110 @@
     </div>
 </div>
 
-<svg 
-    #timeLineRef
-    [attr.viewBox]="'0 0 ' + width + ' ' + height"
->
-    <!-- Vertical Lines -->
-    <line *ngFor="let xAxisElement of xAxisElements; let index = index"
-        class="gray-line"
-        [attr.x1]="index * xFactor" 
-        [attr.y1]="topMargin"
-        [attr.x2]="index * xFactor" 
-        [attr.y2]="height"
-    />
-
-    <!-- Blue Line Representing Today -->
-    <g *ngIf="showTodayIndicator">
-        <g [ngSwitch]="timeLineView">
-            <line *ngSwitchCase="'Date'" class="blue-line"
-                [attr.x1]="(currentHour)*xFactor + currentMinute" 
-                [attr.y1]="topMargin"
-                [attr.x2]="(currentHour)*xFactor + currentMinute" 
-                [attr.y2]="height"/>
-    
-            <line *ngSwitchCase="'Month'" class="blue-line"
-                [attr.x1]="(currentDay - 1)*xFactor + currentHour" 
-                [attr.y1]="topMargin"
-                [attr.x2]="(currentDay - 1)*xFactor + currentHour" 
-                [attr.y2]="height"/>
-    
-            <line *ngSwitchCase="'Year'" class="blue-line"
-                [attr.x1]="(currentMonth)*xFactor + currentDay" 
-                [attr.y1]="topMargin"
-                [attr.x2]="(currentMonth)*xFactor + currentDay" 
-                [attr.y2]="height"/>
-        </g>
-    </g>
- 
-    <!-- Last Line -->
-    <line 
-        class="gray-line"
-        [attr.x1]="xAxisElements.length * xFactor" 
-        [attr.y1]="topMargin"
-        [attr.x2]="xAxisElements.length * xFactor" 
-        [attr.y2]="height"
-    />
-    
-    <!-- Top Horizontal Line -->
-    <line 
-        class="gray-line"
-        x1="0" [attr.y1]="topMargin"
-        [attr.x2]="xAxisElements.length * xFactor" 
-        [attr.y2]="topMargin"
-    />
-
-    <!-- xAxisElements Labels -->
-    <text *ngFor="let xAxisElement of xAxisElements; let index = index" 
-        [class]="timeLineView.toLowerCase()"
-        [attr.x]="(index + 1)*xFactor - xFactor/2"  
-        [attr.y]="topMargin - yFactor/2"
-        (click)="zoomIn(xAxisElement)"
+<div class="svg-container">
+    <div class="sidebar">
+        <app-timeline-sidebar 
+            [event]="sidebarFocusedEvent"
+            [eventTypes]="eventTypes"
+            [creationMode]="creationMode"
+            [(showSidebar)]="showSidebar"
+            (showSidebarChange)="resetFocusedEvent()"
+            (onEventAdd)="setAddedEvent($event)"
+            (onEventEdit)="setEditedEvent($event)"
+            (onEventDelete)="deleteEvent($event)"
+        >
+        </app-timeline-sidebar>
+    </div>
+    <svg 
+        #timeLineRef
+        [attr.viewBox]="'0 0 ' + width + ' ' + height"
     >
-        {{ timeLineView === 'Month' ? xAxisElement.key : xAxisElement.name }}
-    </text>
+        <!-- Vertical Lines -->
+        <line *ngFor="let xAxisElement of xAxisElements; let index = index"
+            class="gray-line"
+            [attr.x1]="index * xFactor" 
+            [attr.y1]="topMargin"
+            [attr.x2]="index * xFactor" 
+            [attr.y2]="height"
+        />
 
-    <!-- Events -->
-    <rect *ngFor="let event of includedEvents" 
-        [class]="timeLineView.toLowerCase()"
-        [attr.x]="event.x" 
-        [attr.y]="event.y" 
-        [attr.width]="event.width" 
-        [attr.height]="event.height"
-        [style.fill]="event.type ? event.type.bgColor : ''"
-        rx="1"
-        (click)="previewEvent(event)"
-    /> 
+        <!-- Blue Line Representing Today -->
+        <g *ngIf="showTodayIndicator">
+            <g [ngSwitch]="timeLineView">
+                <line *ngSwitchCase="'Date'" class="blue-line"
+                    [attr.x1]="(currentHour)*xFactor + currentMinute" 
+                    [attr.y1]="topMargin"
+                    [attr.x2]="(currentHour)*xFactor + currentMinute" 
+                    [attr.y2]="height"/>
+            
+                <line *ngSwitchCase="'Month'" class="blue-line"
+                    [attr.x1]="(currentDay - 1)*xFactor + currentHour" 
+                    [attr.y1]="topMargin"
+                    [attr.x2]="(currentDay - 1)*xFactor + currentHour" 
+                    [attr.y2]="height"/>
+            
+                <line *ngSwitchCase="'Year'" class="blue-line"
+                    [attr.x1]="(currentMonth)*xFactor + currentDay" 
+                    [attr.y1]="topMargin"
+                    [attr.x2]="(currentMonth)*xFactor + currentDay" 
+                    [attr.y2]="height"/>
+            </g>
+        </g>
+    
+        <!-- Last Line -->
+        <line 
+            class="gray-line"
+            [attr.x1]="xAxisElements.length * xFactor" 
+            [attr.y1]="topMargin"
+            [attr.x2]="xAxisElements.length * xFactor" 
+            [attr.y2]="height"
+        />
 
-    <foreignObject *ngFor="let event of includedEvents" 
-        [attr.x]="event.width && event.x ? event.x + spaceBefore : ''" 
-        [attr.y]="event.y" 
-        [attr.width]="event.width" 
-        [attr.height]="event.height"
-        [style.width]="event.width ? event.width - spaceBefore * 3 : 0">
+        <!-- Top Horizontal Line -->
+        <line 
+            class="gray-line"
+            x1="0" [attr.y1]="topMargin"
+            [attr.x2]="xAxisElements.length * xFactor" 
+            [attr.y2]="topMargin"
+        />
+
+        <!-- xAxisElements Labels -->
+        <text *ngFor="let xAxisElement of xAxisElements; let index = index" 
+            [class]="timeLineView.toLowerCase()"
+            [attr.x]="(index + 1)*xFactor - xFactor/2"  
+            [attr.y]="topMargin - yFactor/2"
+            (click)="zoomIn(xAxisElement)"
+        >
+            {{ timeLineView === 'Month' ? xAxisElement.key : xAxisElement.name }}
+        </text>
+
+        <!-- Events -->
+        <rect *ngFor="let event of includedEvents" 
+            [class]="timeLineView.toLowerCase()"
+            [attr.x]="event.x" 
+            [attr.y]="event.y" 
+            [attr.width]="event.width" 
+            [attr.height]="event.height"
+            [style.fill]="event.type ? event.type.bgColor : ''"
+            rx="1"
+        /> 
+
+        <foreignObject *ngFor="let event of includedEvents" 
+            [attr.x]="event.width && event.x ? event.x + spaceBefore : ''" 
+            [attr.y]="event.y" 
+            [attr.width]="event.width" 
+            [attr.height]="event.height"
+            [style.width]="event.width ? event.width - spaceBefore * 3 : 0"
+        >
             <div 
                 xmlns="http://www.w3.org/1999/xhtml"
-                *ngIf="event.showText"  
                 [class]="timeLineView.toLowerCase() + ' name-container'"
                 [title]="event.name"
                 [style.color]="event.type && event.type.color"
+                (click)="previewEvent(event)"
             >
-                <span>{{ event.name }}</span>
+                <span *ngIf="event.showText">{{ event.name }}</span>
             </div>
-      </foreignObject>
-
-
-
-    <!-- Events Labels -->
-    <!-- <g *ngFor="let event of includedEvents">
-        <text
-            *ngIf="event.showText"  
-            [class]="timeLineView.toLowerCase() + ' small-text'"
-            [attr.x]="event.width && event.x ? event.x + spaceBefore : ''" 
-            [attr.y]="event.y ? event.y + yFactor * 0.7 : ''"
-            [style.fill]="event.type ? event.type.color : ''"
-        >
-            {{ event.name }}
-        </text>
-    </g> -->
-</svg>
-{{ yFactor }}
+        </foreignObject>
+    </svg>
+</div>

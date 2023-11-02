@@ -1,31 +1,7 @@
-
+// toolbar elements
 .toolbar {
     display: flex;
     justify-content: space-between;
-}
-
-svg {
-    height: 100%;
-    display: inline-block;
-}
-
-.gray-line {
-    stroke: gray;
-    stroke-width: 0.1;
-}
-
-.blue-line {
-    stroke: blue;
-    stroke-width: 1;
-}
-
-button, select {
-    cursor: pointer;
-    display: inline-block;
-    height: 30px;
-    padding: 0 7px;
-    margin-inline-end: 5px;
-    outline: none;
 }
 
 .chip {
@@ -34,63 +10,82 @@ button, select {
     text-align: center;
 }
 
-rect {
-    cursor: pointer;
+.svg-container {
+    position: relative;
 }
 
-text {
-    text-anchor: middle;
+// svg elements
+svg {
+    height: 100%;
+    display: inline-block;
+
+    .gray-line {
+        stroke: gray;
+        stroke-width: 0.1;
+    }
     
-    &:not(.date) {
+    .blue-line {
+        stroke: blue;
+        stroke-width: 1;
+    }
+
+    rect {
         cursor: pointer;
     }
 
-    &:hover:not(.date) {
-        fill: cornflowerblue;
-    }
-
-    &.date {
-        font-size: 20px;
-    }
-
-    &.month {
-        font-size: 10px;
-    }
-
-    &.year {
-        font-size: 5px;
+    text {
+        text-anchor: middle;
+        
+        &:not(.date) {
+            cursor: pointer;
+        }
+    
+        &:hover:not(.date) {
+            fill: cornflowerblue;
+        }
+    
+        &.date {
+            font-size: 20px;
+        }
+    
+        &.month {
+            font-size: 10px;
+        }
+    
+        &.year {
+            font-size: 5px;
+        }
     }
     
+    .name-container {
+        font-size: 4px;
+        display: flex;
+        align-items: center;
+        height: 100%;
+        cursor: pointer;
+        border-radius: 5px;
+    
+        span {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    
+        &.date {
+            font-size: 15px;
+        }
+    
+        &.month {
+            font-size: 7.5px;
+        }
+    
+        &.year {
+            font-size: calc(5px * 0.75);
+        }
+    }
 }
 
-.name-container {
-    font-size: 4px;
-    display: flex;
-    align-items: center;
-    height: 100%;
-    cursor: pointer;
-    border-radius: 5px;
 
-    span {
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-    }
 
-    &.date {
-        font-size: 15px;
-    }
 
-    &.month {
-        font-size: 7.5px;
-    }
-
-    &.year {
-        font-size: calc(5px * 0.75);
-    }
-}
-
-.container {
-    display: flex;
-}
 

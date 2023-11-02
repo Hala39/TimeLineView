@@ -46,6 +46,9 @@ export class TimelineViewComponent implements AfterViewInit {
   hoursPerDay = 24;
   daysPerMonth = 30;
   monthsPerYear = 12;
+  showSidebar = false;
+  creationMode = false;
+  sidebarFocusedEvent: TimeLineViewEvent | null = null;
 
   get showTodayIndicator() {
     let isTodayInTheScene: boolean = false;
@@ -125,13 +128,13 @@ export class TimelineViewComponent implements AfterViewInit {
     },
     {
       id: 2,
-      name: "Meetings and Discussions",
+      name: "Project Management",
       color: "blue",
       bgColor: "lightblue"
     },
     {
       id: 3,
-      name: "Meetings and Discussions",
+      name: "Coding",
       color: "green",
       bgColor: "lightgreen"
     }
@@ -264,7 +267,34 @@ export class TimelineViewComponent implements AfterViewInit {
   }
 
   previewEvent(event: TimeLineViewEvent) {
-    console.log(event);
+    this.sidebarFocusedEvent = event;
+    this.showSidebar = true;
+  }
+
+  resetFocusedEvent() {
+    this.sidebarFocusedEvent = null;
+    this.creationMode = false;
+  }
+
+  setAddedEvent(event: TimeLineViewEvent) {
+    this.events.push(event);
+    this.setMeasurements();
+  }
+
+  setEditedEvent(event: TimeLineViewEvent) {
+    const eventIndex = this.events.findIndex(e => e.id === event.id);
+    this.events[eventIndex] = event;
+    this.setMeasurements();
+  }
+
+  deleteEvent(eventId: number) {
+    this.events = this.events.filter(e => e.id !== eventId);
+    this.setMeasurements();
+  }
+
+  addEvent() {
+    this.creationMode = true;
+    this.showSidebar = true;
   }
 
   private switchToMonthViewIfMonthChangedAndDateViewWasSelected() {

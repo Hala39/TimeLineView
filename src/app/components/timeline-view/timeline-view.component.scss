@@ -2,6 +2,7 @@
 
 svg {
     height: 100%;
+    display: inline-block;
 }
 
 .gray-line {
@@ -14,14 +15,35 @@ svg {
     stroke-width: 0.2;
 }
 
+.chip {
+    display: inline-block;
+    border-radius: 60px;
+    padding: 5px 7px;
+    cursor: pointer;
+    margin-inline-end: 5px;
+}
+
 text {
     font-family: sans-serif;
     font-size: 8px;
     text-anchor: middle;
+    cursor: pointer;
+
+    &:hover {
+        fill: cornflowerblue;
+    }
 
     &.small-text {
         font-size: 5px;
         text-anchor: start;
+    }
+
+    &.hours-text {
+        font-size: 15px;
+
+        &.small-text {
+            font-size: 9px;
+        }
     }
 }
 
@@ -30,4 +52,7 @@ select {
     outline: none;
 }
 
+.container {
+    display: flex;
+}
 

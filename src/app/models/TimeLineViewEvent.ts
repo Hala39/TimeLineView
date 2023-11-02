@@ -7,16 +7,6 @@ export interface TimeLineViewEvent {
     endDate: Date;
     typeId: number;
     type?: EventType;
-    startYear?: number;
-    startMonth?: number;
-    startDay?: number;
-    startHour?: number;
-    startMinute?: number;
-    endYear?: number;
-    endMonth?: number;
-    endDay?: number;
-    endHour?: number;
-    endMinute?: number;
     x?: number;
     y?: number;
     width?: number;

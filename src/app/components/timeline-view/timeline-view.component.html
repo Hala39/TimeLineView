@@ -16,10 +16,21 @@
     </option>
 </select>
 
+<div class="chips">
+    <button class="chip">
+        {{ selectedYear }}
+    </button>
+    <button *ngIf="timeLineView !== 'Year'"  class="chip" (click)="zoomOutToYears()">
+        {{ months[selectedMonthIndex].name }} &#10005;
+    </button>
+    <button *ngIf="timeLineView === 'Date'" class="chip" (click)="zoomOutToMonths()">
+        {{ selectedDate }} &#10005;
+    </button>
+</div>
+
 <svg 
     #timeLineRef
-    [attr.viewBox]="'0 0 ' + width + ' ' + height" 
-    style="width: max(100%, 1800px);"
+    [attr.viewBox]="'0 0 ' + width + ' ' + height"
 >
     <!-- Vertical Lines -->
     <line *ngFor="let xAxisElement of xAxisElements; let index = index"
@@ -70,8 +81,11 @@
 
     <!-- xAxisElements Labels -->
     <text *ngFor="let xAxisElement of xAxisElements; let index = index" 
+        [class.hours-text]="timeLineView === 'Date'"
         [attr.x]="(index + 1)*xFactor - xFactor/2"  
-        [attr.y]="topMargin - 5">
+        [attr.y]="topMargin - 5"
+        (click)="zoomIn(xAxisElement)"
+    >
         {{ timeLineView === 'Month' ? xAxisElement.key : xAxisElement.name }}
     </text>
 
@@ -85,10 +99,12 @@
         rx="1"
     /> 
 
+    <!-- Events Labels -->
     <g *ngFor="let event of includedEvents">
         <text
             *ngIf="event.showText"  
             class="small-text"
+            [class.hours-text]="timeLineView === 'Date'"
             [attr.x]="event.width && event.x ? event.x + 2 : ''" [attr.y]="event.y ? event.y + 12 : ''"
             [style.fill]="event.type ? event.type.color : ''"
         >

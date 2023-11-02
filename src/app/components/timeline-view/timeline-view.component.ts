@@ -33,7 +33,7 @@ export class TimelineViewComponent implements AfterViewInit {
   height: number = 0;
   leftMargin: number = 0.5;
   rightMargin: number = 0.5;
-  topMargin: number = 25;
+  topMargin: number = 0;
   xFactor: number = 0;
   yFactor: number = 20;
   millisecondsPerSecond = 1000;
@@ -41,6 +41,10 @@ export class TimelineViewComponent implements AfterViewInit {
   minutesPerHour = 60;
   hoursPerDay = 24;
   daysPerMonth = 30;
+  monthsPerYear = 12;
+  get multiplier() {
+    return this.xFactor * 100 / 720;
+  }
 
   get firstDay() {
     let date: Date = new Date();
@@ -175,7 +179,7 @@ export class TimelineViewComponent implements AfterViewInit {
 
   setMeasurements() {
     this.initializeWidth();
-    this.initializeXFactor();
+    this.initializeXYFactor();
     this.initializeXAxisElements();
     this.initializeViewBoxDimensions();
     this.initializeEventsTypes();
@@ -228,34 +232,29 @@ export class TimelineViewComponent implements AfterViewInit {
   }
 
   private initializeWidth() {
-    let width: number = 0;
-    switch (this.timeLineView) {
-      case TimelineView.Year:
-        width = 1000;
-        break;
-    
-      default:
-        width = 1800;
-        break;
-    }
-
-    this.timeLineRef.nativeElement.style.width = `max(100%, ${width}px)`;
+    this.timeLineRef.nativeElement.style.width = `max(100%, 1600px)`;
   }
 
-  private initializeXFactor() {
+  private initializeXYFactor() {
+    const multiplier = 0.5;
     switch (this.timeLineView) {
       case TimelineView.Year:
         this.xFactor = this.getSelectedMonthDaysCount();
+        this.yFactor = this.monthsPerYear * 0.5;
         break;
       
       case TimelineView.Month:
-        this.xFactor = 24;
+        this.xFactor = this.hoursPerDay;
+        this.yFactor = this.daysPerMonth * 0.4;
         break;
 
       case TimelineView.Date:
-          this.xFactor = 60;
+          this.xFactor = this.minutesPerHour;
+          this.yFactor = this.hoursPerDay;
           break;   
     }
+
+    this.topMargin = this.yFactor * 2;
   }
 
   private initializeViewBoxDimensions() {
@@ -317,13 +316,13 @@ export class TimelineViewComponent implements AfterViewInit {
       const startDate = event.startDate.getDate();
       const isStartDateBeforeTheFirstDay = this.isStartDateBeforeTheFirstDay(event);
       const x = isStartDateBeforeTheFirstDay ? -1 : (startMonth) * this.xFactor + startDate;
-      const y = this.topMargin * index + this.topMargin;
+      const y = (this.yFactor + this.yFactor/2) * index + this.topMargin;
       const differenceInTime = isStartDateBeforeTheFirstDay ? 
         event.endDate.getTime() - this.firstDay.getTime() : event.endDate.getTime() - event.startDate.getTime();
         const differenceInDays = 
         differenceInTime / this.millisecondsPerSecond / this.secondsPerMinute / this.minutesPerHour / this.hoursPerDay / this.daysPerMonth * this.xFactor;
         const width = differenceInDays;
-        const height = 20;
+        const height = this.yFactor;
         event.x = x;
         event.y = y;
         event.width = width;
@@ -339,13 +338,13 @@ export class TimelineViewComponent implements AfterViewInit {
       const startHour = event.startDate.getHours();
       const isStartDateBeforeTheFirstDay = this.isStartDateBeforeTheFirstDay(event);
       const x = isStartDateBeforeTheFirstDay ? -1 : (startDay - 1) * this.xFactor + startHour;
-      const y = this.topMargin * index + this.topMargin;
+      const y = (this.yFactor + this.yFactor/2) * index + this.topMargin;
       const differenceInTime = isStartDateBeforeTheFirstDay ? 
         event.endDate.getTime() - this.firstDay.getTime() : event.endDate.getTime() - event.startDate.getTime();
       const differenceInHours = 
         differenceInTime / this.millisecondsPerSecond / this.secondsPerMinute / this.minutesPerHour / this.hoursPerDay * this.xFactor;
       const width = differenceInHours;
-      const height = 20;
+      const height = this.yFactor;
       event.x = x;
       event.y = y;
       event.width = width;
@@ -361,13 +360,13 @@ export class TimelineViewComponent implements AfterViewInit {
       const startHour = event.startDate.getHours();
       const isStartDateBeforeTheFirstDay = this.isStartDateBeforeTheFirstDay(event);
       const x = isStartDateBeforeTheFirstDay ? -1 : startHour * this.xFactor + startMinute;
-      const y = this.topMargin * index + this.topMargin;
+      const y = (this.yFactor + this.yFactor/2) * index + this.topMargin;
       const differenceInTime = isStartDateBeforeTheFirstDay ? 
         event.endDate.getTime() - this.firstDay.getTime() : event.endDate.getTime() - event.startDate.getTime();
       const differenceInHours = 
         differenceInTime / this.millisecondsPerSecond / this.secondsPerMinute / this.minutesPerHour * this.xFactor;
       const width = differenceInHours;
-      const height = 20;
+      const height = this.yFactor;
       event.x = x;
       event.y = y;
       event.width = width;

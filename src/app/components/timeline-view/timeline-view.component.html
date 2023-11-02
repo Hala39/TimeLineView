@@ -15,6 +15,7 @@
         {{ month.name }}
     </option>
 </select>
+{{ width }} {{ multiplier}}
 
 <div class="chips">
     <button class="chip">
@@ -50,9 +51,9 @@
             [attr.y2]="height"/>
 
         <line *ngSwitchCase="'Month'" class="blue-line"
-            [attr.x1]="(currentDay)*xFactor + currentHour" 
+            [attr.x1]="(currentDay - 1)*xFactor + currentHour" 
             [attr.y1]="topMargin"
-            [attr.x2]="(currentDay)*xFactor + currentHour" 
+            [attr.x2]="(currentDay - 1)*xFactor + currentHour" 
             [attr.y2]="height"/>
 
         <line *ngSwitchCase="'Year'" class="blue-line"
@@ -81,9 +82,9 @@
 
     <!-- xAxisElements Labels -->
     <text *ngFor="let xAxisElement of xAxisElements; let index = index" 
-        [class.hours-text]="timeLineView === 'Date'"
+        [class]="timeLineView.toLowerCase()"
         [attr.x]="(index + 1)*xFactor - xFactor/2"  
-        [attr.y]="topMargin - 5"
+        [attr.y]="topMargin - yFactor/2"
         (click)="zoomIn(xAxisElement)"
     >
         {{ timeLineView === 'Month' ? xAxisElement.key : xAxisElement.name }}
@@ -91,11 +92,12 @@
 
     <!-- Events -->
     <rect *ngFor="let event of includedEvents" 
-        [attr.x]="event.x" [attr.y]="event.y" 
+        [class]="timeLineView.toLowerCase()"
+        [attr.x]="event.x" 
+        [attr.y]="event.y" 
         [attr.width]="event.width" 
         [attr.height]="event.height"
         [style.fill]="event.type ? event.type.bgColor : ''"
-        [style.stroke]="event.type ? event.type.color : ''"
         rx="1"
     /> 
 
@@ -103,12 +105,13 @@
     <g *ngFor="let event of includedEvents">
         <text
             *ngIf="event.showText"  
-            class="small-text"
-            [class.hours-text]="timeLineView === 'Date'"
-            [attr.x]="event.width && event.x ? event.x + 2 : ''" [attr.y]="event.y ? event.y + 12 : ''"
+            [class]="timeLineView.toLowerCase() + ' small-text'"
+            [attr.x]="event.width && event.x ? event.x + 2 : ''" 
+            [attr.y]="event.y ? event.y + yFactor * 0.7 : ''"
             [style.fill]="event.type ? event.type.color : ''"
         >
             {{ event.name }}
         </text>
     </g>
 </svg>
+{{ yFactor }}

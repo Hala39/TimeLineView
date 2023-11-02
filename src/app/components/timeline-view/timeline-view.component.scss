@@ -1,4 +1,8 @@
 
+.toolbar {
+    display: flex;
+    justify-content: space-between;
+}
 
 svg {
     height: 100%;
@@ -15,52 +19,75 @@ svg {
     stroke-width: 1;
 }
 
-.chip {
-    display: inline-block;
-    border-radius: 60px;
-    padding: 5px 7px;
+button, select {
     cursor: pointer;
+    display: inline-block;
+    height: 30px;
+    padding: 0 7px;
     margin-inline-end: 5px;
+    outline: none;
+}
+
+.chip {
+    border-radius: 60px;
+    min-width: 70px;
+    text-align: center;
+}
+
+rect {
+    cursor: pointer;
 }
 
 text {
-    font-family: sans-serif;
     text-anchor: middle;
-    cursor: pointer;
-
-    &:hover {
-        fill: cornflowerblue;
+    
+    &:not(.date) {
+        cursor: pointer;
     }
 
-    &.small-text {
-        text-anchor: start;
+    &:hover:not(.date) {
+        fill: cornflowerblue;
     }
 
     &.date {
         font-size: 20px;
-        &.small-text {
-            font-size: 15px;
-        }
     }
 
     &.month {
         font-size: 10px;
-        &.small-text {
-            font-size: 7.5px;
-        }
     }
 
     &.year {
         font-size: 5px;
-        &.small-text {
-            font-size: calc(5px * 0.75);
-        }
     }
+    
 }
 
-select {
-    padding: 5px 7px;
-    outline: none;
+.name-container {
+    font-size: 4px;
+    display: flex;
+    align-items: center;
+    height: 100%;
+    cursor: pointer;
+    border-radius: 5px;
+
+    span {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    &.date {
+        font-size: 15px;
+    }
+
+    &.month {
+        font-size: 7.5px;
+    }
+
+    &.year {
+        font-size: calc(5px * 0.75);
+    }
 }
 
 .container {

@@ -1,32 +1,34 @@
-<select (change)="setSelectedYear($event)">
-    <option *ngFor="let year of years"
-        [selected]="year.key === selectedYear" 
-        [attr.value]="year.key" 
-        [attr.name]="year.name">
-        {{ year.name }}
-    </option>
-</select>
-
-<select (change)="setSelectedMonth($event)">
-    <option *ngFor="let month of months"
-        [selected]="month.key === selectedMonthIndex" 
-        [attr.value]="month.key" 
-        [attr.name]="month.name">
-        {{ month.name }}
-    </option>
-</select>
-{{ width }} {{ multiplier}}
-
-<div class="chips">
-    <button class="chip">
-        {{ selectedYear }}
-    </button>
-    <button *ngIf="timeLineView !== 'Year'"  class="chip" (click)="zoomOutToYears()">
-        {{ months[selectedMonthIndex].name }} &#10005;
-    </button>
-    <button *ngIf="timeLineView === 'Date'" class="chip" (click)="zoomOutToMonths()">
-        {{ selectedDate }} &#10005;
-    </button>
+<div class="toolbar">
+    <div class="chips">
+        <button class="chip">
+            {{ selectedYear }}
+        </button>
+        <button *ngIf="timeLineView !== 'Year'"  class="chip" (click)="zoomOutToYears()">
+            {{ months[selectedMonthIndex].name }} &#10005;
+        </button>
+        <button *ngIf="timeLineView === 'Date'" class="chip" (click)="zoomOutToMonths()">
+           {{ selectedDateName }}, {{ selectedDate }} &#10005;
+        </button>
+    </div>
+    <div class="pickers">
+        <button class="today" (click)="resetToToday()">Today</button>
+        <select (change)="setSelectedMonth($event)">
+            <option *ngFor="let month of months"
+                [selected]="month.key === selectedMonthIndex" 
+                [attr.value]="month.key" 
+                [attr.name]="month.name">
+                {{ month.name }}
+            </option>
+        </select>
+        <select (change)="setSelectedYear($event)">
+            <option *ngFor="let year of years"
+                [selected]="year.key === selectedYear" 
+                [attr.value]="year.key" 
+                [attr.name]="year.name">
+                {{ year.name }}
+            </option>
+        </select>
+    </div>
 </div>
 
 <svg 
@@ -43,24 +45,26 @@
     />
 
     <!-- Blue Line Representing Today -->
-    <g [ngSwitch]="timeLineView">
-        <line *ngSwitchCase="'Date'" class="blue-line"
-            [attr.x1]="(currentHour)*xFactor + currentMinute" 
-            [attr.y1]="topMargin"
-            [attr.x2]="(currentHour)*xFactor + currentMinute" 
-            [attr.y2]="height"/>
-
-        <line *ngSwitchCase="'Month'" class="blue-line"
-            [attr.x1]="(currentDay - 1)*xFactor + currentHour" 
-            [attr.y1]="topMargin"
-            [attr.x2]="(currentDay - 1)*xFactor + currentHour" 
-            [attr.y2]="height"/>
-
-        <line *ngSwitchCase="'Year'" class="blue-line"
-            [attr.x1]="(currentMonth)*xFactor + currentDay" 
-            [attr.y1]="topMargin"
-            [attr.x2]="(currentMonth)*xFactor + currentDay" 
-            [attr.y2]="height"/>
+    <g *ngIf="showTodayIndicator">
+        <g [ngSwitch]="timeLineView">
+            <line *ngSwitchCase="'Date'" class="blue-line"
+                [attr.x1]="(currentHour)*xFactor + currentMinute" 
+                [attr.y1]="topMargin"
+                [attr.x2]="(currentHour)*xFactor + currentMinute" 
+                [attr.y2]="height"/>
+    
+            <line *ngSwitchCase="'Month'" class="blue-line"
+                [attr.x1]="(currentDay - 1)*xFactor + currentHour" 
+                [attr.y1]="topMargin"
+                [attr.x2]="(currentDay - 1)*xFactor + currentHour" 
+                [attr.y2]="height"/>
+    
+            <line *ngSwitchCase="'Year'" class="blue-line"
+                [attr.x1]="(currentMonth)*xFactor + currentDay" 
+                [attr.y1]="topMargin"
+                [attr.x2]="(currentMonth)*xFactor + currentDay" 
+                [attr.y2]="height"/>
+        </g>
     </g>
  
     <!-- Last Line -->
@@ -99,19 +103,39 @@
         [attr.height]="event.height"
         [style.fill]="event.type ? event.type.bgColor : ''"
         rx="1"
+        (click)="previewEvent(event)"
     /> 
 
+    <foreignObject *ngFor="let event of includedEvents" 
+        [attr.x]="event.width && event.x ? event.x + spaceBefore : ''" 
+        [attr.y]="event.y" 
+        [attr.width]="event.width" 
+        [attr.height]="event.height"
+        [style.width]="event.width ? event.width - spaceBefore * 3 : 0">
+            <div 
+                xmlns="http://www.w3.org/1999/xhtml"
+                *ngIf="event.showText"  
+                [class]="timeLineView.toLowerCase() + ' name-container'"
+                [title]="event.name"
+                [style.color]="event.type && event.type.color"
+            >
+                <span>{{ event.name }}</span>
+            </div>
+      </foreignObject>
+
+
+
     <!-- Events Labels -->
-    <g *ngFor="let event of includedEvents">
+    <!-- <g *ngFor="let event of includedEvents">
         <text
             *ngIf="event.showText"  
             [class]="timeLineView.toLowerCase() + ' small-text'"
-            [attr.x]="event.width && event.x ? event.x + 2 : ''" 
+            [attr.x]="event.width && event.x ? event.x + spaceBefore : ''" 
             [attr.y]="event.y ? event.y + yFactor * 0.7 : ''"
             [style.fill]="event.type ? event.type.color : ''"
         >
             {{ event.name }}
         </text>
-    </g>
+    </g> -->
 </svg>
 {{ yFactor }}

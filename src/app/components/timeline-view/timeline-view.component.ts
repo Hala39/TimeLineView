@@ -1,4 +1,5 @@
 import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { daysOfTheWeek } from 'src/app/data/daysOfTheWeek';
 import { hours } from 'src/app/data/hours';
 import { months } from 'src/app/data/months';
 import { years } from 'src/app/data/years';
@@ -18,6 +19,7 @@ export class TimelineViewComponent implements AfterViewInit {
 
   months = months;
   years = years;
+  daysOfTheWeek = daysOfTheWeek;
   currentDate: Date = new Date();
   currentMinute: number = this.currentDate.getMinutes();
   currentHour: number = this.currentDate.getHours();
@@ -28,6 +30,7 @@ export class TimelineViewComponent implements AfterViewInit {
   selectedYear: number = this.currentDate.getFullYear();
   selectedMonthIndex: number = this.currentDate.getMonth();
   selectedDate: number = this.currentDate.getDate();
+  selectedDateName: string = "";
   xAxisElements: TimeLineViewElement[] = [];
   width: number = 0;
   height: number = 0;
@@ -35,13 +38,37 @@ export class TimelineViewComponent implements AfterViewInit {
   rightMargin: number = 0.5;
   topMargin: number = 0;
   xFactor: number = 0;
-  yFactor: number = 20;
+  yFactor: number = 0;
+  spaceBefore: number = 2;
   millisecondsPerSecond = 1000;
   secondsPerMinute = 60;
   minutesPerHour = 60;
   hoursPerDay = 24;
   daysPerMonth = 30;
   monthsPerYear = 12;
+
+  get showTodayIndicator() {
+    let isTodayInTheScene: boolean = false;
+    switch (this.timeLineView) {
+      case TimelineView.Year:
+        isTodayInTheScene = this.selectedYear === this.currentYear;
+        break;
+    
+      case TimelineView.Month:
+        isTodayInTheScene = this.selectedYear === this.currentYear 
+          && this.selectedMonthIndex === this.currentMonth;
+        break;
+
+      case TimelineView.Date:
+        isTodayInTheScene = this.selectedYear === this.currentYear 
+          && this.selectedMonthIndex === this.currentMonth
+          && this.selectedDate === this.currentDay;
+        break;
+    }
+
+    return isTodayInTheScene;
+  }
+
   get multiplier() {
     return this.xFactor * 100 / 720;
   }
@@ -120,49 +147,49 @@ export class TimelineViewComponent implements AfterViewInit {
     },
     {
       id: 2,
-      name: "2 Meeting with Hala",
+      name: "2 Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat veniam ipsam enim alias porro quas vero perspiciatis asperiores dolorum quia, aliquid quo ab, sed at exercitationem, neque quod vitae praesenti",
       startDate: new Date(2023, 9, 6, 12, 0, 0),
       endDate: new Date(2023, 9, 11, 6, 0, 0),
       typeId: 2,
     },
     {
       id: 3,
-      name: "3 Meeting with Hala",
+      name: "3 Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat veniam ipsam enim alias porro quas vero perspiciatis asperiores dolorum quia, aliquid quo ab, sed at exercitationem, neque quod vitae praesenti",
       startDate: new Date(2022, 3, 6, 12, 0, 0),
       endDate: new Date(2023, 9, 19, 6, 0, 0),
       typeId: 3,
     },
     {
       id: 4,
-      name: "4 Meeting with Hala",
+      name: "4 Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat veniam ipsam enim alias porro quas vero perspiciatis asperiores dolorum quia, aliquid quo ab, sed at exercitationem, neque quod vitae praesenti",
       startDate: new Date(2023, 9, 16, 12, 0, 0),
       endDate: new Date(2023, 10, 22, 6, 0, 0),
       typeId: 1,
     },
     {
       id: 5,
-      name: "5 Meeting with Hala",
+      name: "5 Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat veniam ipsam enim alias porro quas vero perspiciatis asperiores dolorum quia, aliquid quo ab, sed at exercitationem, neque quod vitae praesenti",
       startDate: new Date(2023, 10, 6, 3, 0, 0),
       endDate: new Date(2023, 10, 11, 6, 0, 0),
       typeId: 1,
     },
     {
       id: 6,
-      name: "6 Meeting with Hala",
+      name: "6 Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat veniam ipsam enim alias porro quas vero perspiciatis asperiores dolorum quia, aliquid quo ab, sed at exercitationem, neque quod vitae praesenti",
       startDate: new Date(2023, 11, 6, 3, 0, 0),
       endDate: new Date(2025, 10, 11, 6, 0, 0),
       typeId: 3,
     },
     {
       id: 6,
-      name: "6 Meeting with Hala",
+      name: "6 Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat veniam ipsam enim alias porro quas vero perspiciatis asperiores dolorum quia, aliquid quo ab, sed at exercitationem, neque quod vitae praesenti",
       startDate: new Date(2023, 10, 1, 3, 0, 0),
       endDate: new Date(2023, 10, 1, 6, 0, 0),
       typeId: 3,
     },
     {
       id: 7,
-      name: "7 Meeting with Hala",
+      name: "7 Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellat veniam ipsam enim alias porro quas vero perspiciatis asperiores dolorum quia, aliquid quo ab, sed at exercitationem, neque quod vitae praesenti",
       startDate: new Date(2023, 10, 1, 8, 0, 0),
       endDate: new Date(2023, 10, 1, 21, 0, 0),
       typeId: 2,
@@ -194,6 +221,7 @@ export class TimelineViewComponent implements AfterViewInit {
   setSelectedMonth(event: Event) {
     const monthIndex = +(event as any).target.value;
     this.selectedMonthIndex = monthIndex;
+    this.switchToMonthViewIfMonthChangedAndDateViewWasSelected();
     this.setMeasurements();
   }
 
@@ -217,11 +245,7 @@ export class TimelineViewComponent implements AfterViewInit {
       case TimelineView.Month:
         this.timeLineView = TimelineView.Date;
         this.selectedDate = xAxisElement.key;
-        break;
-
-      case TimelineView.Date:
-        // this.timeLineView = TimelineView.Hour;
-        // this.selectedMonthIndex = xAxisElement.key;
+        this.selectedDateName = xAxisElement.name;
         break;
 
       default:
@@ -229,6 +253,24 @@ export class TimelineViewComponent implements AfterViewInit {
     }
     
     this.setMeasurements();
+  }
+
+  resetToToday() {
+    this.selectedYear = this.currentYear;
+    this.selectedMonthIndex = this.currentMonth;
+    this.selectedDate = this.currentDay;
+    this.selectedDateName = this.daysOfTheWeek[this.currentDate.getDay() - 1];
+    this.setMeasurements();
+  }
+
+  previewEvent(event: TimeLineViewEvent) {
+    console.log(event);
+  }
+
+  private switchToMonthViewIfMonthChangedAndDateViewWasSelected() {
+   if (this.timeLineView === TimelineView.Date) {
+     this.timeLineView = TimelineView.Month;
+   }
   }
 
   private initializeWidth() {

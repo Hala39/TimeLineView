@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { EventType } from './components/timeline-view/models/EventType';
+import { TimelineView } from './components/timeline-view/models/TimelineView';
 import { TimeLineViewEvent } from './components/timeline-view/models/TimeLineViewEvent';
 
 @Component({
@@ -9,41 +10,41 @@ import { TimeLineViewEvent } from './components/timeline-view/models/TimeLineVie
 })
 export class AppComponent implements OnInit {
   title = 'timeline';
-
   eventTypes: EventType[] = [ 
-  {
-    id: 1,
-    name: "Meetings and Discussions",
-    color: "red",
-    bgColor: "pink",
-  },
-  {
-    id: 2,
-    name: "Project Management",
-    color: "blue",
-    bgColor: "lightblue",
-  },
-  {
-    id: 3,
-    name: "Coding",
-    color: "green",
-    bgColor: "lightgreen",
-  },
-  {
-    id: 4,
-    name: "Testing",
-    color: "brown",
-    bgColor: "orange",
-  },
-  {
-    id: 5,
-    name: "Administartion",
-    color: "purple",
-    bgColor: "violet",
-  },
-];
+    {
+      id: 1,
+      name: "Meetings and Discussions",
+      color: "red",
+      bgColor: "pink",
+    },
+    {
+      id: 2,
+      name: "Project Management",
+      color: "blue",
+      bgColor: "lightblue",
+    },
+    {
+      id: 3,
+      name: "Coding",
+      color: "green",
+      bgColor: "lightgreen",
+    },
+    {
+      id: 4,
+      name: "Testing",
+      color: "brown",
+      bgColor: "orange",
+    },
+    {
+      id: 5,
+      name: "Administartion",
+      color: "purple",
+      bgColor: "violet",
+    },
+  ];
 
   events: TimeLineViewEvent[] = [];
+  timelineView: TimelineView = TimelineView.Month;
 
   ngOnInit() {
     const startDate = new Date(2022, 0, 1);
@@ -52,7 +53,19 @@ export class AppComponent implements OnInit {
     this.events = this.generateFakeEvents(startDate, endDate, numberOfEvents);
   }
 
-  generateFakeEvents(startDate: Date, endDate: Date, numberOfEvents: number) {
+  addEvent(addedEvent: TimeLineViewEvent) {
+    console.log(addedEvent);
+  }
+
+  editEvent(modifiedEvent: TimeLineViewEvent) {
+    console.log(modifiedEvent);
+  }
+
+  deleteEvent(eventId: number) {
+    console.log(eventId);
+  }
+
+  private generateFakeEvents(startDate: Date, endDate: Date, numberOfEvents: number) {
     const events = [];
     const eventTypesCount = this.eventTypes.length;
     const timeRange = endDate.getTime() - startDate.getTime();

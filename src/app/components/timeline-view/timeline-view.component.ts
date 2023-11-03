@@ -21,7 +21,7 @@ export class TimelineViewComponent implements OnChanges, AfterViewInit {
 
   @Input() eventTypes: EventType[] = [];
   @Input() events: TimeLineViewEvent[] = [];
-  @Input() timeLineView: TimelineView = TimelineView.Month;
+  @Input() timeLineView: TimelineView = TimelineView.Date;
   @Input() selectedMonthIndex: number = this.currentDate.getMonth();
   @Input() selectedDate: number = this.currentDate.getDate();
   @Input() selectedDateName: string = "";

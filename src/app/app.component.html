@@ -1,5 +1,10 @@
 <app-timeline-view 
     *ngIf="events.length" 
     [events]="events" 
-    [eventTypes]="eventTypes">
+    [eventTypes]="eventTypes"
+    [timeLineView]="timelineView"
+    (onAddEvent)="addEvent($event)"
+    (onEditEvent)="editEvent($event)"
+    (onDeleteEvent)="deleteEvent($event)"
+>
 </app-timeline-view>

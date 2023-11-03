@@ -1,5 +1,6 @@
 :host {
     padding: 10px;
+    user-select: none;
 }
 
 // toolbar elements
@@ -8,6 +9,7 @@
     justify-content: space-between;
     flex-wrap: wrap;
     gap: 10px;
+    padding: 0 10px;
 }
 
 .chip {
@@ -32,7 +34,6 @@
     max-width: 100%;
     overflow-x: auto;
     height: 100%;
-    cursor: grab;
 }
 
 // svg elements

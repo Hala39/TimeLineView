@@ -52,7 +52,10 @@
     </div>
 </div>
 
-<div class="svg-container" appHorizontalScroll>
+<div class="svg-container" 
+    [appHorizontalScroll]="!showSidebar" 
+    [style.cursor]="showSidebar ? 'default' : 'grab'"
+>
     <div class="sidebar">
         <app-timeline-sidebar 
             [event]="sidebarFocusedEvent"
@@ -69,6 +72,7 @@
     <svg 
         #timeLineRef
         [attr.viewBox]="'0 0 ' + width + ' ' + height"
+        [style.pointerEvents]="showSidebar ? 'none' : 'initial'"
     >
         <!-- Vertical Lines -->
         <line *ngFor="let xAxisElement of xAxisElements; let index = index"

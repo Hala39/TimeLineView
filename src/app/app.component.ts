@@ -72,8 +72,6 @@ export class AppComponent implements OnInit {
   
       events.push(fakeEvent);
     }
-  
-    console.log(events);
     
     return events;
   }

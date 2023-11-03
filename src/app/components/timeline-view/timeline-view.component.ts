@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, Input, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { daysOfTheWeek } from 'src/app/components/timeline-view/data/daysOfTheWeek';
 import { hours } from 'src/app/components/timeline-view/data/hours';
 import { months } from 'src/app/components/timeline-view/data/months';
@@ -17,15 +17,19 @@ export class TimelineViewComponent implements OnChanges, AfterViewInit {
 
   @ViewChild("timeLineRef") timeLineRef!: ElementRef<SVGElement>;
 
+  currentDate: Date = new Date();
+
   @Input() eventTypes: EventType[] = [];
   @Input() events: TimeLineViewEvent[] = [];
-  
-  currentDate: Date = new Date();
   @Input() timeLineView: TimelineView = TimelineView.Month;
   @Input() selectedMonthIndex: number = this.currentDate.getMonth();
   @Input() selectedDate: number = this.currentDate.getDate();
   @Input() selectedDateName: string = "";
   @Input() selectedYear: number = this.currentDate.getFullYear();
+  
+  @Output('onDeleteEvent') deleteEmitter = new EventEmitter<number>();
+  @Output('onAddEvent') addEmitter = new EventEmitter<TimeLineViewEvent>();
+  @Output('onEditEvent') editEmitter = new EventEmitter<TimeLineViewEvent>();
 
   months = months;
   years = years;
@@ -206,17 +210,20 @@ export class TimelineViewComponent implements OnChanges, AfterViewInit {
 
   setAddedEvent(event: TimeLineViewEvent) {
     this.events.push(event);
+    this.addEmitter.emit(event);
     this.setMeasurements();
   }
 
   setEditedEvent(event: TimeLineViewEvent) {
     const eventIndex = this.events.findIndex(e => e.id === event.id);
     this.events[eventIndex] = event;
+    this.editEmitter.emit(event);
     this.setMeasurements();
   }
 
   deleteEvent(eventId: number) {
     this.events = this.events.filter(e => e.id !== eventId);
+    this.deleteEmitter.emit(eventId);
     this.setMeasurements();
   }
 
@@ -485,7 +492,7 @@ export class TimelineViewComponent implements OnChanges, AfterViewInit {
   }
 
   private prolongHeightIfNotSufficient(rowsCount: number) {
-    let multiplier = rowsCount < 10 ? 10 : rowsCount;
+    let multiplier = rowsCount < 10 ? 20 : rowsCount;
     this.height = (this.yFactor + this.yFactor/2) * multiplier + this.topMargin + this.yFactor/2; 
   }
 

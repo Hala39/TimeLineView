@@ -1,4 +1,4 @@
-import { Directive, ElementRef, HostListener, Renderer2 } from '@angular/core';
+import { Directive, ElementRef, HostListener, Input } from '@angular/core';
 
 @Directive({
   selector: '[appHorizontalScroll]'
@@ -8,14 +8,18 @@ export class HorizontalScrollDirective {
   private initialX = 0;
   private initialScrollLeft = 0;
 
-  constructor(private el: ElementRef, private renderer: Renderer2) {}
+  @Input("appHorizontalScroll") activateGrabFunctionality: boolean = false;
+
+  constructor(private el: ElementRef) {}
 
   @HostListener('mousedown', ['$event'])
   onMouseDown(event: MouseEvent) {
-    this.isDragging = true;
-    this.initialX = event.clientX;
-    this.initialScrollLeft = this.el.nativeElement.scrollLeft;
-    event.preventDefault();
+    if (this.activateGrabFunctionality) {
+        this.isDragging = true;
+        this.initialX = event.clientX;
+        this.initialScrollLeft = this.el.nativeElement.scrollLeft;
+        event.preventDefault();
+    }
   }
 
   @HostListener('mousemove', ['$event'])

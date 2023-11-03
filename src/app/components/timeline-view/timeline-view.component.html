@@ -86,7 +86,7 @@
         <!-- Weekends backgrounds -->
         <g *ngFor="let xAxisElement of xAxisElements; let index = index">
             <path *ngIf="timeLineView === 'Month' && (xAxisElement.name === 'Sun') || (xAxisElement.name === 'Sat')" 
-                [attr.d]="'M ' + (index * xFactor - xFactor/2) + ' 0 L ' + (index * xFactor - xFactor/2) + ' ' + height"
+                [attr.d]="'M ' + ((index + 1) * xFactor - xFactor/2) + ' 0 L ' + ((index + 1) * xFactor - xFactor/2) + ' ' + height"
              fill="gray" stroke="rgb(237, 236, 236)" [attr.stroke-width]="xFactor" />
         </g>
 

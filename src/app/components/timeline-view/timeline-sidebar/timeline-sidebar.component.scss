@@ -3,7 +3,7 @@
     top: 10px;
     inset-inline-start: 0;
     padding: 15px;
-    height: 100%;
+    height: calc(100% - 10px);
     width: min(300px, 100%);
     border-right: 1px solid rgb(223, 222, 222);
     background-color: #fff;

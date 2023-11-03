@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { EventType } from 'src/app/models/EventType';
+import { EventType } from 'src/app/components/timeline-view/models/EventType';
 
 @Component({
   selector: 'app-timeline-sidebar-legend',

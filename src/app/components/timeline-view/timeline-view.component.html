@@ -67,6 +67,7 @@
         </app-timeline-sidebar>
     </div>
     <svg 
+        
         #timeLineRef
         [attr.viewBox]="'0 0 ' + width + ' ' + height"
     >
@@ -78,6 +79,13 @@
             [attr.x2]="index * xFactor" 
             [attr.y2]="height"
         />
+
+        <!-- Weekends backgrounds -->
+        <g *ngFor="let xAxisElement of xAxisElements; let index = index">
+            <path *ngIf="timeLineView === 'Month' && (xAxisElement.name === 'Sun') || (xAxisElement.name === 'Sat')" 
+                [attr.d]="'M ' + (index * xFactor - xFactor/2) + ' 0 L ' + (index * xFactor - xFactor/2) + ' ' + height"
+             fill="gray" stroke="rgb(237, 236, 236)" [attr.stroke-width]="xFactor" />
+        </g>
 
         <!-- Blue Line Representing Today -->
         <g *ngIf="showTodayIndicator">
@@ -119,14 +127,6 @@
             [attr.x2]="xAxisElements.length * xFactor" 
             [attr.y2]="topMargin"
         />
-
-        <!-- Weekends backgrounds -->
-        <g *ngFor="let xAxisElement of xAxisElements; let index = index">
-            <path *ngIf="timeLineView === 'Month' && (xAxisElement.name === 'Sun') || (xAxisElement.name === 'Sat')" 
-                [attr.d]="'M ' + (index * xFactor - xFactor/2) + ' 0 L ' + (index * xFactor - xFactor/2) + ' ' + height"
-             fill="gray" stroke="rgb(237, 236, 236)" [attr.stroke-width]="xFactor" />
-        </g>
-        
 
         <!-- xAxisElements Labels -->
         <text *ngFor="let xAxisElement of xAxisElements; let index = index" 

@@ -1,7 +1,13 @@
+:host {
+    padding: 10px;
+}
+
 // toolbar elements
 .toolbar {
     display: flex;
     justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
 }
 
 .chip {
@@ -10,6 +16,7 @@
     text-align: center;
     outline: none;
     box-shadow: none;
+    margin-bottom: 10px;
 
     &.off {
         border-color: black !important;
@@ -21,6 +28,11 @@
 
 .svg-container {
     position: relative;
+    display: block;
+    max-width: 100%;
+    overflow-x: auto;
+    height: 100%;
+    cursor: grab;
 }
 
 // svg elements

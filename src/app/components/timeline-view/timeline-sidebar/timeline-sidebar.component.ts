@@ -1,7 +1,7 @@
 import { Component, ElementRef, EventEmitter, Input, OnChanges, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { EventType } from 'src/app/models/EventType';
-import { TimeLineViewEvent } from 'src/app/models/TimeLineViewEvent';
+import { EventType } from 'src/app/components/timeline-view/models/EventType';
+import { TimeLineViewEvent } from 'src/app/components/timeline-view/models/TimeLineViewEvent';
 
 @Component({
   selector: 'app-timeline-sidebar',

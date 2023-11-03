@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { EventType } from './models/EventType';
-import { TimeLineViewEvent } from './models/TimeLineViewEvent';
+import { EventType } from './components/timeline-view/models/EventType';
+import { TimeLineViewEvent } from './components/timeline-view/models/TimeLineViewEvent';
 
 @Component({
   selector: 'app-root',

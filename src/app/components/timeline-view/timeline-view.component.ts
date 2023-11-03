@@ -1,12 +1,12 @@
 import { AfterViewInit, Component, ElementRef, Input, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
-import { daysOfTheWeek } from 'src/app/data/daysOfTheWeek';
-import { hours } from 'src/app/data/hours';
-import { months } from 'src/app/data/months';
-import { years } from 'src/app/data/years';
-import { EventType } from 'src/app/models/EventType';
-import { TimelineView } from 'src/app/models/TimelineView';
-import { TimeLineViewElement } from 'src/app/models/TimeLineViewElement';
-import { TimeLineViewEvent } from 'src/app/models/TimeLineViewEvent';
+import { daysOfTheWeek } from 'src/app/components/timeline-view/data/daysOfTheWeek';
+import { hours } from 'src/app/components/timeline-view/data/hours';
+import { months } from 'src/app/components/timeline-view/data/months';
+import { years } from 'src/app/components/timeline-view/data/years';
+import { EventType } from 'src/app/components/timeline-view/models/EventType';
+import { TimelineView } from 'src/app/components/timeline-view/models/TimelineView';
+import { TimeLineViewElement } from 'src/app/components/timeline-view/models/TimeLineViewElement';
+import { TimeLineViewEvent } from 'src/app/components/timeline-view/models/TimeLineViewEvent';
 
 @Component({
   selector: 'app-timeline-view',
@@ -404,7 +404,7 @@ export class TimelineViewComponent implements OnChanges, AfterViewInit {
       const startMonth = event.startDate.getMonth();
       const startDate = event.startDate.getDate();
       const isStartDateBeforeTheFirstDay = this.isStartDateBeforeTheFirstDay(event);
-      const x = isStartDateBeforeTheFirstDay ? 0 : (startMonth) * this.xFactor + startDate;
+      const x = isStartDateBeforeTheFirstDay ? -1 : (startMonth) * this.xFactor + startDate;
       const y = (this.yFactor + this.yFactor/2) * rowIndex + this.topMargin + this.yFactor/2;
       const differenceInTime = isStartDateBeforeTheFirstDay ? 
         event.endDate.getTime() - this.firstDay.getTime() : event.endDate.getTime() - event.startDate.getTime();
@@ -428,7 +428,7 @@ export class TimelineViewComponent implements OnChanges, AfterViewInit {
       const startDay = event.startDate.getDate();
       const startHour = event.startDate.getHours();
       const isStartDateBeforeTheFirstDay = this.isStartDateBeforeTheFirstDay(event);
-      const x = isStartDateBeforeTheFirstDay ? 0 : (startDay - 1) * this.xFactor + startHour;
+      const x = isStartDateBeforeTheFirstDay ? -1 : (startDay - 1) * this.xFactor + startHour;
       const y = (this.yFactor + this.yFactor/2) * rowIndex + this.topMargin + this.yFactor/2;
       const differenceInTime = isStartDateBeforeTheFirstDay ? 
         event.endDate.getTime() - this.firstDay.getTime() : event.endDate.getTime() - event.startDate.getTime();
@@ -452,7 +452,7 @@ export class TimelineViewComponent implements OnChanges, AfterViewInit {
       const startMinute = event.startDate.getMinutes();
       const startHour = event.startDate.getHours();
       const isStartDateBeforeTheFirstDay = this.isStartDateBeforeTheFirstDay(event);
-      const x = isStartDateBeforeTheFirstDay ? 0 : startHour * this.xFactor + startMinute;
+      const x = isStartDateBeforeTheFirstDay ? -1 : startHour * this.xFactor + startMinute;
       const y = (this.yFactor + this.yFactor/2) * rowIndex + this.topMargin + this.yFactor/2;;
       const differenceInTime = isStartDateBeforeTheFirstDay ? 
         event.endDate.getTime() - this.firstDay.getTime() : event.endDate.getTime() - event.startDate.getTime();
@@ -526,4 +526,5 @@ export class TimelineViewComponent implements OnChanges, AfterViewInit {
     this.selectedMonthIndex = date.getMonth();
     this.selectedDate = date.getDate();
   }
+  
 }

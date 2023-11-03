@@ -46,13 +46,15 @@ export class TimelineSidebarComponent implements OnChanges {
 
   hideSidebar() {
     this.showSidebar = false;
+    this.creationMode = false;
+    this.editModeIsOn = false;
     this.showSidebarChange.emit(this.showSidebar);
   }
 
   switchToEditMode() {
-      this.buildForm();
-      this.setEventTypeToDefault();
-      this.editModeIsOn = true;
+    this.buildForm();
+    this.setEventTypeToDefault();
+    this.editModeIsOn = true;
   }
 
   resizeTextarea() {

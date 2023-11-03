@@ -31,7 +31,7 @@
         <button (click)="before()">&#8249;</button>
         <button (click)="after()">&#8250;</button>
         <button class="today" (click)="resetToToday()">Today</button>
-        <select (change)="setSelectedMonth($event)">
+        <select *ngIf="timeLineView !== 'Year'" (change)="setSelectedMonth($event)">
             <option 
                 *ngFor="let month of months"
                 [selected]="month.key === selectedMonthIndex" 

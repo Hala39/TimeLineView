@@ -493,7 +493,7 @@ export class TimelineViewComponent implements OnChanges, AfterViewInit {
 
   private prolongHeightIfNotSufficient(rowsCount: number) {
     let multiplier = rowsCount < 10 ? 20 : rowsCount;
-    this.height = (this.yFactor + this.yFactor/2) * multiplier + this.topMargin + this.yFactor/2; 
+    this.height = (this.yFactor + this.yFactor/2) * multiplier + this.topMargin + this.yFactor/2 + 20; 
   }
 
   private isStartDateBeforeTheFirstDay(event: TimeLineViewEvent) : boolean {

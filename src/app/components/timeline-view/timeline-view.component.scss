@@ -28,6 +28,12 @@
     }
 }
 
+.pickers {
+    button, select {
+        margin-bottom: 10px;
+    }
+}
+
 .svg-container {
     position: relative;
     display: block;

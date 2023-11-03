@@ -52,7 +52,7 @@
     </div>
 </div>
 
-<div class="svg-container">
+<div class="svg-container" appHorizontalScroll>
     <div class="sidebar">
         <app-timeline-sidebar 
             [event]="sidebarFocusedEvent"
@@ -67,7 +67,6 @@
         </app-timeline-sidebar>
     </div>
     <svg 
-        
         #timeLineRef
         [attr.viewBox]="'0 0 ' + width + ' ' + height"
     >

@@ -81,7 +81,7 @@ export class TimelineSidebarComponent implements OnChanges {
 
   delete() {
     this.deleteEventEmitter.emit(this.event?.id);
-    this.showSidebar = false;
+    this.hideSidebar();
   }
   
   cancel() {

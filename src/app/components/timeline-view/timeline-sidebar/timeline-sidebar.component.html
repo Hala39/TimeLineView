@@ -42,6 +42,7 @@
     
         <h4>End Date</h4>
         {{ event?.endDate | date:"medium" }}
+
     </div>
     <form *ngIf="editModeIsOn" [formGroup]="editEventForm" class="event-form">
         <p class="asterisk italic">The fields marked with asterisks are required.</p>

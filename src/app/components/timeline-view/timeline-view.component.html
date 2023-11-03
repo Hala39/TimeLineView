@@ -15,12 +15,25 @@
         >
            {{ selectedDateName }}, {{ selectedDate }} &#10005;
         </button>
+        <button *ngFor="let type of eventTypes"
+            class="chip" 
+            [style.borderColor]="type.color"
+            [style.color]="type.color"
+            [style.backgroundColor]="type.bgColor"
+            [class.off]="!includedTypes.includes(type.id)"
+            (click)="toggleType(type.id)"
+        >
+            {{ type.name }}
+        </button>
     </div>
     <div class="pickers">
         <button (click)="addEvent()">&#43;</button>
+        <button (click)="before()">&#8249;</button>
+        <button (click)="after()">&#8250;</button>
         <button class="today" (click)="resetToToday()">Today</button>
         <select (change)="setSelectedMonth($event)">
-            <option *ngFor="let month of months"
+            <option 
+                *ngFor="let month of months"
                 [selected]="month.key === selectedMonthIndex" 
                 [attr.value]="month.key" 
                 [attr.name]="month.name"
@@ -101,10 +114,19 @@
         <!-- Top Horizontal Line -->
         <line 
             class="gray-line"
-            x1="0" [attr.y1]="topMargin"
+            x1="0" 
+            [attr.y1]="topMargin"
             [attr.x2]="xAxisElements.length * xFactor" 
             [attr.y2]="topMargin"
         />
+
+        <!-- Weekends backgrounds -->
+        <g *ngFor="let xAxisElement of xAxisElements; let index = index">
+            <path *ngIf="timeLineView === 'Month' && (xAxisElement.name === 'Sun') || (xAxisElement.name === 'Sat')" 
+                [attr.d]="'M ' + (index * xFactor - xFactor/2) + ' 0 L ' + (index * xFactor - xFactor/2) + ' ' + height"
+             fill="gray" stroke="rgb(237, 236, 236)" [attr.stroke-width]="xFactor" />
+        </g>
+        
 
         <!-- xAxisElements Labels -->
         <text *ngFor="let xAxisElement of xAxisElements; let index = index" 
@@ -117,32 +139,40 @@
         </text>
 
         <!-- Events -->
-        <rect *ngFor="let event of includedEvents" 
-            [class]="timeLineView.toLowerCase()"
-            [attr.x]="event.x" 
-            [attr.y]="event.y" 
-            [attr.width]="event.width" 
-            [attr.height]="event.height"
-            [style.fill]="event.type ? event.type.bgColor : ''"
-            rx="1"
-        /> 
-
-        <foreignObject *ngFor="let event of includedEvents" 
-            [attr.x]="event.width && event.x ? event.x + spaceBefore : ''" 
-            [attr.y]="event.y" 
-            [attr.width]="event.width" 
-            [attr.height]="event.height"
-            [style.width]="event.width ? event.width - spaceBefore * 3 : 0"
-        >
-            <div 
-                xmlns="http://www.w3.org/1999/xhtml"
-                [class]="timeLineView.toLowerCase() + ' name-container'"
-                [title]="event.name"
-                [style.color]="event.type && event.type.color"
+        <g *ngFor="let event of includedEvents">
+            <rect *ngIf="includedTypes.includes(event.typeId)" 
+                [class]="timeLineView.toLowerCase()"
+                [attr.x]="event.x" 
+                [attr.y]="event.y" 
+                [attr.width]="event.width" 
+                [attr.height]="event.height"
+                [style.fill]="event.type ? event.type.bgColor : ''"
+                rx="1"
                 (click)="previewEvent(event)"
-            >
-                <span *ngIf="event.showText">{{ event.name }}</span>
-            </div>
-        </foreignObject>
+            /> 
+        </g>
+        
+        <!-- Event Name -->
+        <g *ngFor="let event of includedEvents">
+            <foreignObject  
+                *ngIf="includedTypes.includes(event.typeId)"
+                [attr.x]="event.width && event.x ? event.x + spaceBefore : ''" 
+                [attr.y]="event.y" 
+                [attr.width]="event.width" 
+                [attr.height]="event.height"
+                [style.width]="event.width ? event.width - spaceBefore * 3 : 0"
+                (click)="previewEvent(event)"
+            >   
+                <div 
+                    xmlns="http://www.w3.org/1999/xhtml"
+                    [class]="timeLineView.toLowerCase() + ' name-container'"
+                    [title]="event.name"
+                    [style.color]="event.type && event.type.color"
+                    (click)="previewEvent(event)"
+                >
+                    <span *ngIf="event.showText">{{ event.name }}</span>
+                </div>
+            </foreignObject>
+        </g>
     </svg>
 </div>

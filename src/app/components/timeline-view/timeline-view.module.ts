@@ -1,9 +1,9 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { TimelineViewComponent } from './timeline-view.component';
-import { TimelineSidebarComponent } from './timeline-sidebar/timeline-sidebar.component';
-import { TimelineSidebarLegendComponent } from './timeline-sidebar-legend/timeline-sidebar-legend.component';
+import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
+import { TimelineSidebarLegendComponent } from './timeline-sidebar-legend/timeline-sidebar-legend.component';
+import { TimelineSidebarComponent } from './timeline-sidebar/timeline-sidebar.component';
+import { TimelineViewComponent } from './timeline-view.component';
 
 
 
@@ -15,7 +15,7 @@ import { ReactiveFormsModule } from '@angular/forms';
   ],
   imports: [
     CommonModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
   ],
   exports: [TimelineViewComponent]
 })

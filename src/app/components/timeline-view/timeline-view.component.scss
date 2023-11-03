@@ -8,6 +8,15 @@
     border-radius: 60px;
     min-width: 70px;
     text-align: center;
+    outline: none;
+    box-shadow: none;
+
+    &.off {
+        border-color: black !important;
+        background-color: gray !important;
+        color: black !important;
+        opacity: 50%;
+    }
 }
 
 .svg-container {
@@ -17,6 +26,7 @@
 // svg elements
 svg {
     height: 100%;
+    margin-top: 30px;
     display: inline-block;
 
     .gray-line {
@@ -26,7 +36,7 @@ svg {
     
     .blue-line {
         stroke: blue;
-        stroke-width: 1;
+        stroke-width: 0.5;
     }
 
     rect {
